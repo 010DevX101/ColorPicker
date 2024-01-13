@@ -5,7 +5,7 @@ A color picker library that can be included in plugins. Based off of Easy 1D Col
 
 # Installation
 ## From Source
-To install the color picker library from source into your project run the `installation.lua` script that can be found in the Installation folder in the command bar.
+To install the color picker library from source into your project run in the command bar the `install.lua` script that can be found in the install folder.
 
 ## From Roblox
 To install the color picker library from Roblox into your project, use the following link: https://create.roblox.com/marketplace/asset/15969604603
