@@ -35,37 +35,46 @@ local ColorUtils = require(script.ColorUtils)
 
 local CurrentColor = script.CurrentColor
 
+local PluginGuiService = game:GetService("PluginGuiService")
+
 -- upon the user selecting
-function ColorPicker:Prompt(plugin : Plugin, Id : string, Title : string, InitialColor : Color3)
+function ColorPicker:Prompt(plugin : Plugin, Title : string, InitialColor : Color3)
 	if InitialColor then
 		CurrentColor.Value = InitialColor
 	else
 		CurrentColor.Value = ColorShower.BackgroundColor3
 	end
-	
+
 	ColorPicker:SetColor(CurrentColor.Value, Vertical, "Y")
+	
+	local PluginGui = PluginGuiService:FindFirstChild("ColorPicker")
+	
+	if not PluginGui then
+		PluginGui = plugin:CreateDockWidgetPluginGui(
+			"ColorPicker",
+			DockWidgetPluginGuiInfo.new(
+				Enum.InitialDockState.Float,
+				false,
+				false,
+				350,
+				350,
+				350,
+				350
+			),
+			Title
+		)
 
-	local PluginGui = plugin:CreateDockWidgetPluginGui(
-		Id,
-		DockWidgetPluginGuiInfo.new(
-			Enum.InitialDockState.Float,
-			false,
-			false,
-			350,
-			350,
-			350,
-			350
-		),
-		Title
-	)
+		PluginGui.Title = Title
+		PluginGui.Name = "ColorPicker"
+		ColorPickerGui.Parent = PluginGui
+		PluginGui.Enabled = true
 
+		ColorPicker:GetMouseInput(PluginGui, Horizontal, Horizontal.ColorPickerArea, "X", Vertical, "Y")
+		ColorPicker:GetMouseInput(PluginGui, Vertical, Vertical.ColorPickerArea, "Y")
+	end
+	
 	PluginGui.Title = Title
-	PluginGui.Name = Id
-	ColorPickerGui.Parent = PluginGui
 	PluginGui.Enabled = true
-
-	ColorPicker:GetMouseInput(PluginGui, Horizontal, Horizontal.ColorPickerArea, "X", Vertical, "Y")
-	ColorPicker:GetMouseInput(PluginGui, Vertical, Vertical.ColorPickerArea, "Y")
 	
 	return PluginGui
 end
@@ -80,7 +89,7 @@ function ColorPicker:SetColor(Color : Color3, frameToUpdate : Frame, Axis : stri
 	HueBox.Text = ColorUtils.RGBToHSV(Color)[1]
 	SatBox.Text = ColorUtils.RGBToHSV(Color)[2]
 	ValBox.Text = ColorUtils.RGBToHSV(Color)[3]
-	
+
 	if(frameToUpdate) then --If the current color change is supposed to influence a different frame:
 		local Area = frameToUpdate:WaitForChild("ColorPickerArea")
 		local Grad : UIGradient = Area:FindFirstChildOfClass('UIGradient')
